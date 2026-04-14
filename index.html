@@ -35,7 +35,6 @@
 
 <!-- 3. Plugin Clappr FLV wajib ada -->
 <script src="https://cdn.jsdelivr.net/npm/@clappr/flvjs-playback@latest/dist/flvjs-playback.js"></script>
-<script type="module" crossorigin src="/player.js"></script>
   
 
   <!-- DASH Shaka plugin for Clappr -->
@@ -72,33 +71,29 @@
   <div id="root"></div>
 
 <script>
-// Biar ?flv= kebaca sama player.js lama
+// Bajak URLSearchParams biar ?flv= kebaca jadi ?hls= sama player.js
 (function() {
-  const url = new URL(location.href);
-  const flv = url.searchParams.get('flv');
-  if (flv) {
-    // Hapus ?flv= terus ganti jadi ?hls= biar player.js lama ngenalin
-    url.searchParams.delete('flv');
-    url.searchParams.set('hls', flv);
-    history.replaceState(null, '', url.toString());
-  }
+  const _get = URLSearchParams.prototype.get;
+  URLSearchParams.prototype.get = function(key) {
+    // Kalo player.js minta "hls", kasih nilai dari "flv" kalo ada
+    if (key === 'hls') {
+      return _get.call(this, 'hls') || _get.call(this, 'flv');
+    }
+    return _get.call(this, key);
+  };
+
+  // Bajak Clappr biar auto pake plugin FLV kalo link .flv
+  const _Clappr = window.Clappr.Player;
+  window.Clappr.Player = function(opts) {
+    if (opts.source && opts.source.indexOf('.flv') > -1) {
+      opts.plugins = [window.FlvjsPlayback];
+      opts.mimeType = 'video/x-flv';
+    }
+    return new _Clappr(opts);
+  };
 })();
 </script>
 <script src="player.js"></script>
-
-<script>
-// Force Clappr pake FLV kalo URL .flv
-document.addEventListener('DOMContentLoaded', () => {
-  const oldClappr = window.Clappr.Player;
-  window.Clappr.Player = function(opt) {
-    if(opt.source && opt.source.indexOf('.flv') > -1) {
-      opt.plugins = [window.FlvjsPlayback];
-      opt.mimeType = 'video/x-flv';
-    }
-    return new oldClappr(opt);
-  }
-});
-</script>
 
 </body>
 
