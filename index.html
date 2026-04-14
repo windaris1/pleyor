@@ -68,32 +68,36 @@
 
 <body>
 
-  <div id="root"></div>
 
 <script>
-// Bajak URLSearchParams biar ?flv= kebaca jadi ?hls= sama player.js
-(function() {
-  const _get = URLSearchParams.prototype.get;
-  URLSearchParams.prototype.get = function(key) {
-    // Kalo player.js minta "hls", kasih nilai dari "flv" kalo ada
-    if (key === 'hls') {
-      return _get.call(this, 'hls') || _get.call(this, 'flv');
-    }
-    return _get.call(this, key);
-  };
-
-  // Bajak Clappr biar auto pake plugin FLV kalo link .flv
-  const _Clappr = window.Clappr.Player;
-  window.Clappr.Player = function(opts) {
-    if (opts.source && opts.source.indexOf('.flv') > -1) {
-      opts.plugins = [window.FlvjsPlayback];
-      opts.mimeType = 'video/x-flv';
-    }
-    return new _Clappr(opts);
-  };
+// Kalo ada ?flv= langsung bikin player sendiri, skip player.js
+(function(){
+  const flv=new URLSearchParams(location.search).get("flv");
+  if(!flv)return; // Kalo bukan flv, biarin player.js yg jalan
+  document.addEventListener("DOMContentLoaded",()=>{
+    const r=document.getElementById("root")||document.body;
+    r.innerHTML="";
+    r.style.cssText="width:100%;max-width:1000px;margin:0 auto;aspect-ratio:16/9;background:#000";
+    new window.Clappr.Player({
+      source:flv,
+      parent:r,
+      width:"100%",
+      height:"100%",
+      plugins:[window.FlvjsPlayback],
+      mimeType:"video/x-flv",
+      poster:"/playse.jpg"
+    });
+    // Stop player.js biar gak nimpa
+    window.stop();
+  });
 })();
 </script>
+
 <script src="player.js"></script>
+<!-- ... sisa body ... -->
+
+  <div id="root"></div>
+
 
 </body>
 
