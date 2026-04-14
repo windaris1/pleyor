@@ -72,6 +72,21 @@
   <div id="root"></div>
 
 <script>
+// Biar ?flv= kebaca sama player.js lama
+(function() {
+  const url = new URL(location.href);
+  const flv = url.searchParams.get('flv');
+  if (flv) {
+    // Hapus ?flv= terus ganti jadi ?hls= biar player.js lama ngenalin
+    url.searchParams.delete('flv');
+    url.searchParams.set('hls', flv);
+    history.replaceState(null, '', url.toString());
+  }
+})();
+</script>
+<script src="player.js"></script>
+
+<script>
 // Force Clappr pake FLV kalo URL .flv
 document.addEventListener('DOMContentLoaded', () => {
   const oldClappr = window.Clappr.Player;
