@@ -70,6 +70,20 @@
 
   <div id="root"></div>
 
+<script>
+// Force Clappr pake FLV kalo URL .flv
+document.addEventListener('DOMContentLoaded', () => {
+  const oldClappr = window.Clappr.Player;
+  window.Clappr.Player = function(opt) {
+    if(opt.source && opt.source.indexOf('.flv') > -1) {
+      opt.plugins = [window.FlvjsPlayback];
+      opt.mimeType = 'video/x-flv';
+    }
+    return new oldClappr(opt);
+  }
+});
+</script>
+
 </body>
 
 </html>
