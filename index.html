@@ -47,50 +47,6 @@
   <link rel="stylesheet" crossorigin href="/player.css">
 </head>
 
-<script>
-setTimeout(function() {
-  const root = document.getElementById('root');
-  root.innerHTML = '';
-  root.style.cssText = 'width:100%;max-width:1000px;margin:0 auto;aspect-ratio:16/9;background:#000;position:relative;';
-
-  // 1. Baca parameter?hls= dari URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const channel = urlParams.get('hls') || 'default';
-
-  // 2. DAFTAR STREAM DOANG - POSTER KITA BIKIN 1 UNTUK SEMUA
-  const streams = {
-    'skycalcio': 'https://link-m3u8-skycalcio-lu.m3u8', // GANTI LINK ASLI
-    'bein1': 'https://link-m3u8-bein1-lu.m3u8', // GANTI LINK ASLI
-    'rcitv': 'https://link-m3u8-rci-lu.m3u8', // GANTI LINK ASLI
-    'default': 'https://test-streams.mux.dev/x36xhzz.m3u8'
-  };
-
-  // 3. POSTER 1 UNTUK SEMUA CHANNEL - GANTI INI DOANG
-  const POSTER_SATU_UNTUK_SEMUA = 'https://pluyer.pages.dev/playse.jpg';
-
-  // 4. Pilih stream sesuai?hls=
-  const currentStream = streams[channel] || streams['default'];
-
-  // Watermark Sibal TV
-  const watermark = document.createElement('div');
-  watermark.textContent = 'Sibal TV';
-  watermark.style.cssText = 'position:absolute;top:10px;right:15px;color:#fff;z-index:999;font-family:Inter,sans-serif;font-size:14px;opacity:0.8;';
-  root.appendChild(watermark);
-
-  // 5. Init Clappr - POSTER NYA SELALU SAMA
-  new Clappr.Player({
-    source: currentStream,
-    parentId: '#root',
-    poster: POSTER_SATU_UNTUK_SEMUA, // MAU?hls= APAPUN POSTER TETEP INI
-    width: '100%',
-    height: '100%',
-    autoPlay: false, // WAJIB FALSE
-    plugins: [HlsjsPlayback],
-    mediacontrol: {seekbar: '#1e40af'}
-  });
-
-}, 1000);
-</script>
 </body>
 
 
