@@ -18,14 +18,13 @@
   <link rel="icon"
     href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='black'/%3E%3Ctext x='50' y='55' font-size='80' fill='white' text-anchor='middle' dominant-baseline='middle' font-family='sans-serif' font-weight='bold'%3EG%3C/text%3E%3C/svg%3E" />
  
-<!-- 1. Clappr Core -->
-<script src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
-<!-- 2. Quality Selector buat HLS ganti resolusi -->
-<script src="https://cdn.jsdelivr.net/npm/@clappr/hlsjs-playback@latest/dist/hlsjs-playback.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/level-selector@latest/dist/level-selector.min.js"></script>
-<!-- 3. FLV Support -->
-<script src="https://cdn.jsdelivr.net/npm/flv.js@latest/dist/flv.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@clappr/flvjs-playback@latest/dist/flvjs-playback.js"></script>
+<head>
+  <!-- 1. Pake versi fix, jangan @latest -->
+  <script src="https://cdn.jsdelivr.net/npm/@clappr/player@0.4.7/dist/clappr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flv.js@1.6.2/dist/flv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/clappr-flvjs-playback@0.3.0/dist/clappr-flvjs-playback.min.js"></script>
+
+
 
 <!-- 1. Clappr wajib pertama -->
 <script src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
@@ -36,6 +35,10 @@
 <!-- 3. Plugin Clappr FLV wajib ada -->
 <script src="https://cdn.jsdelivr.net/npm/@clappr/flvjs-playback@latest/dist/flvjs-playback.js"></script>
   
+<!-- 2. Quality Selector buat HLS ganti resolusi -->
+<script src="https://cdn.jsdelivr.net/npm/@clappr/hlsjs-playback@latest/dist/hlsjs-playback.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/level-selector@latest/dist/level-selector.min.js"></script>
 
   <!-- DASH Shaka plugin for Clappr -->
   <script src="https://cdn.jsdelivr.net/npm/clappr-dash-shaka-playback@latest/dist/dash-shaka-playback.min.js"></script>
@@ -61,40 +64,28 @@
   <script disable-devtool-auto src="https://cdn.jsdelivr.net/npm/disable-devtool@latest"></script>
   
 <link rel="stylesheet" crossorigin href="/player.css">
+
+  <!-- 2. Script bypass di atas -->
+  <script>
+    const flvUrl = new URLSearchParams(location.search).get("flv");
+    if (flvUrl) {
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.innerHTML = '<div id="flv-player" style="width:100%;max-width:1000px;margin:0 auto;aspect-ratio:16/9;background:#000"></div>';
+        new Clappr.Player({
+          source: flvUrl,
+          parentId: "#flv-player",
+          plugins: [FlvjsPlayback],
+          mimeType: "video/x-flv",
+          width: "100%", height: "100%"
+        });
+      });
+      window.stop();
+    }
+  </script>
+
+  <!-- 3. player.js lama lu -->
+  <script src="player.js"></script>
 </head>
-
-</body>
-
-
-<body>
-
-
-<script>
-// Kalo ada ?flv= langsung bikin player sendiri, skip player.js
-(function(){
-  const flv=new URLSearchParams(location.search).get("flv");
-  if(!flv)return; // Kalo bukan flv, biarin player.js yg jalan
-  document.addEventListener("DOMContentLoaded",()=>{
-    const r=document.getElementById("root")||document.body;
-    r.innerHTML="";
-    r.style.cssText="width:100%;max-width:1000px;margin:0 auto;aspect-ratio:16/9;background:#000";
-    new window.Clappr.Player({
-      source:flv,
-      parent:r,
-      width:"100%",
-      height:"100%",
-      plugins:[window.FlvjsPlayback],
-      mimeType:"video/x-flv",
-      poster:"/playse.jpg"
-    });
-    // Stop player.js biar gak nimpa
-    window.stop();
-  });
-})();
-</script>
-
-<script src="player.js"></script>
-<!-- ... sisa body ... -->
 
   <div id="root"></div>
 
